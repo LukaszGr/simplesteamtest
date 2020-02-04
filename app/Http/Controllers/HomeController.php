@@ -10,19 +10,9 @@ use Illuminate\Http\Request;
 class HomeController extends Controller
 {
     /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        $this->middleware('auth');
-    }
-
-    /**
      * Show the application dashboard.
      *
-     * @return \Illuminate\Contracts\Support\Renderable
+     * @return \Illuminate\Http\Response
      */
     public function index()
     {
@@ -34,7 +24,7 @@ class HomeController extends Controller
     /**
      * Create new post
      * 
-     * @return \Illuminate\Contracts\Support\Renderable
+     * @return \Illuminate\Http\Response
      */
     public function createPost()
     {
@@ -45,7 +35,7 @@ class HomeController extends Controller
      * Save new post
      * 
      * @param Request $request
-     * @return \Illuminate\Contracts\Support\Renderable
+     * @return \Illuminate\Http\Response
      */
     public function savePost(Request $request)
     {
@@ -60,8 +50,62 @@ class HomeController extends Controller
         $blog->body = $request->input('body');
         $blog->user_id = Auth::id();
         $blog->save();
+
         return redirect()->route('home')->with('status', 'Your blog has been saved. Well done.');
     }
 
+    /**
+     * Display specified post.
+     *
+     * @param  \App\Post $post
+     * @return \Illuminate\Http\Response
+     */
+    public function showPost(Post $post)
+    {
+        return view('show_post',compact('post'));
+    }
+
+    /**
+     * Edit post
+     * 
+     * @param  \App\Post $post
+     * @return \Illuminate\Http\Response
+     */
+    public function editPost(Post $post)
+    {
+        return view('edit_post', compact('post'));
+    }
+
+    /**
+     * Update post
+     * 
+     * @param Request $request
+     * @param  \App\Post $post
+     * @return \Illuminate\Http\Response
+     */
+    public function updatePost(Request $request, Post $post)
+    {
+        $request->validate([
+                'title' => 'required|max:255',
+                'body' => 'required',
+            ]
+        );
+    
+        $post->update($request->all());
+
+        return redirect()->route('home')->with('status', 'Your post has been updated. Well done!');
+    }
+
+    /**
+     * Delete a post
+     * 
+     * @param  \App\Post $post
+     * @return \Illuminate\Contracts\Support\Renderable
+     */
+    public function deletePost(Post $post)
+    {
+        $post->delete();
+        return redirect()->route('home')->with('status', 'Your post has been deleted. Sad face :(');
+    }
 
 }
