@@ -11,7 +11,7 @@ Steps to follow to run the applcation:
 7. create an empty database
 8. update .env with database details
 9. migrate the database `php artisan migrate`
-10. seed the database `php artisan db:seed --class=UsersTableSeeder`
+10. seed the database `php artisan db:seed`
 11. launch dev server `php artisan serve`
 12. go to <http://127.0.0.1:8000>
 
